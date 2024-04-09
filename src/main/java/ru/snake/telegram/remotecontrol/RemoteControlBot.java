@@ -100,6 +100,12 @@ public class RemoteControlBot implements LongPollingSingleThreadUpdateConsumer {
 			command.execute(controller);
 		}
 
+		try {
+			Thread.sleep(100);
+		} catch (InterruptedException e) {
+			LOG.warn("Sleep failed.", e);
+		}
+
 		BufferedImage image = controller.showCursor();
 		sendPhoto(chatId, image);
 	}
