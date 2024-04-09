@@ -23,14 +23,6 @@ public class MouseClick implements Command {
 		}
 	}
 
-	public Button getButton() {
-		return button;
-	}
-
-	public int getCount() {
-		return count;
-	}
-
 	@Override
 	public String toString() {
 		return "MouseClick [button=" + button + ", count=" + count + "]";

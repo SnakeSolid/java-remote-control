@@ -15,9 +15,14 @@ import org.telegram.telegrambots.client.okhttp.OkHttpTelegramClient;
 import org.telegram.telegrambots.longpolling.util.LongPollingSingleThreadUpdateConsumer;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
+import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.message.Message;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup.InlineKeyboardMarkupBuilder;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardRow;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.generics.TelegramClient;
 
@@ -25,6 +30,7 @@ import ru.snake.telegram.remotecontrol.command.Command;
 import ru.snake.telegram.remotecontrol.command.CommandParser;
 import ru.snake.telegram.remotecontrol.command.Key;
 import ru.snake.telegram.remotecontrol.command.PressKeys;
+import ru.snake.telegram.remotecontrol.script.Scripts;
 
 public class RemoteControlBot implements LongPollingSingleThreadUpdateConsumer {
 
@@ -38,10 +44,18 @@ public class RemoteControlBot implements LongPollingSingleThreadUpdateConsumer {
 
 	private final Controller controller;
 
-	public RemoteControlBot(final String botToken, final Set<Long> whiteList, final Controller controller) {
+	private final Scripts scripts;
+
+	public RemoteControlBot(
+		final String botToken,
+		final Set<Long> whiteList,
+		final Controller controller,
+		final Scripts scripts
+	) {
 		this.telegramClient = new OkHttpTelegramClient(botToken);
 		this.whiteList = whiteList;
 		this.controller = controller;
+		this.scripts = scripts;
 	}
 
 	@Override
@@ -69,6 +83,7 @@ public class RemoteControlBot implements LongPollingSingleThreadUpdateConsumer {
 					break;
 
 				case "/scripts":
+					scripts(chatId);
 					break;
 
 				case "/clipboard":
@@ -80,6 +95,62 @@ public class RemoteControlBot implements LongPollingSingleThreadUpdateConsumer {
 					break;
 				}
 			}
+		} else if (update.hasCallbackQuery()) {
+			CallbackQuery query = update.getCallbackQuery();
+			long userId = query.getFrom().getId();
+			long chatId = query.getMessage().getChatId();
+			String data = query.getData();
+
+			if (!whiteList.contains(userId)) {
+				sendMessage(chatId, String.format("Access denied, your ID %d.", userId));
+			} else if (data.startsWith(":")) {
+				String name = data.substring(1);
+				String script = scripts.getScript(name);
+				execute(chatId, script);
+			}
+		}
+	}
+
+	private void scripts(long chatId) {
+		StringBuilder builder = new StringBuilder();
+		InlineKeyboardMarkupBuilder<?, ?> keyboardBuilder = InlineKeyboardMarkup.builder();
+		InlineKeyboardRow row = new InlineKeyboardRow();
+		int index = 1;
+
+		for (String name : scripts.getNames()) {
+			InlineKeyboardButton button = new InlineKeyboardButton(name);
+			button.setCallbackData(String.format(":%s", name));
+			row.add(button);
+
+			builder.append(index);
+			builder.append("\\. *");
+			builder.append(name.strip());
+			builder.append("*\n");
+
+			if (index % 4 == 0) {
+				keyboardBuilder.keyboardRow(row);
+				row = new InlineKeyboardRow();
+			}
+
+			index += 1;
+		}
+
+		if (!row.isEmpty()) {
+			keyboardBuilder.keyboardRow(row);
+		}
+
+		InlineKeyboardMarkup markup = keyboardBuilder.build();
+		SendMessage message = SendMessage.builder()
+			.chatId(chatId)
+			.parseMode("MarkdownV2")
+			.text(builder.toString())
+			.replyMarkup(markup)
+			.build();
+
+		try {
+			telegramClient.execute(message);
+		} catch (TelegramApiException e) {
+			LOG.warn("Failed to send message.", e);
 		}
 	}
 

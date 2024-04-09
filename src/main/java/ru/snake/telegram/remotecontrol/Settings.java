@@ -1,5 +1,6 @@
 package ru.snake.telegram.remotecontrol;
 
+import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -17,9 +18,12 @@ public class Settings {
 
 	private final Set<Long> allowUsers;
 
-	public Settings(final String botToken, final Set<Long> allowUsers) {
+	private final File scriptsPath;
+
+	public Settings(final String botToken, final Set<Long> allowUsers, final File scriptsPath) {
 		this.botToken = botToken;
 		this.allowUsers = allowUsers;
+		this.scriptsPath = scriptsPath;
 	}
 
 	public String getBotToken() {
@@ -30,9 +34,13 @@ public class Settings {
 		return allowUsers;
 	}
 
+	public File getScriptsPath() {
+		return scriptsPath;
+	}
+
 	@Override
 	public String toString() {
-		return "Settings [botToken=" + botToken + ", allowUsers=" + allowUsers + "]";
+		return "Settings [botToken=" + botToken + ", allowUsers=" + allowUsers + ", scriptsPath=" + scriptsPath + "]";
 	}
 
 	public static Settings parse(String[] args) {
@@ -53,14 +61,25 @@ public class Settings {
 			.argName("ID")
 			.type(Long.class)
 			.build();
+		Option scriptsOption = Option.builder("s")
+			.longOpt("scripts-path")
+			.desc("Path to scripts file")
+			.required()
+			.hasArg()
+			.argName("PATH")
+			.type(File.class)
+			.build();
 		options.addOption(tokenOption);
 		options.addOption(allowOption);
+		options.addOption(scriptsOption);
 
 		CommandLineParser parser = new DefaultParser();
 		CommandLine commandLine;
+		File scriptsPath;
 
 		try {
 			commandLine = parser.parse(options, args);
+			scriptsPath = (File) commandLine.getParsedOptionValue(scriptsOption);
 		} catch (ParseException e) {
 			System.err.println(e.getMessage());
 
@@ -77,7 +96,7 @@ public class Settings {
 			allowUsers.add(Long.parseLong(userId));
 		}
 
-		return new Settings(botToken, allowUsers);
+		return new Settings(botToken, allowUsers, scriptsPath);
 	}
 
 }

@@ -12,6 +12,7 @@
 		<logback.version>1.5.3</logback.version>
 		<cli.version>1.6.0</cli.version>
 		<jparsec.version>3.1</jparsec.version>
+		<snakeyaml.version>2.2</snakeyaml.version>
 		<telegrambots.version>7.2.0</telegrambots.version>
 		<junit.version>5.10.2</junit.version>
 
@@ -37,6 +38,11 @@
 			<groupId>org.jparsec</groupId>
 			<artifactId>jparsec</artifactId>
 			<version>${jparsec.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.yaml</groupId>
+			<artifactId>snakeyaml</artifactId>
+			<version>${snakeyaml.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.telegram</groupId>

@@ -8,12 +8,20 @@ import org.slf4j.LoggerFactory;
 import org.telegram.telegrambots.longpolling.TelegramBotsLongPollingApplication;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import ru.snake.telegram.remotecontrol.script.Scripts;
+
 public class Main {
 
 	private static final Logger LOG = LoggerFactory.getLogger(Main.class);
 
-	public static void main(String[] args) throws AWTException {
+	public static void main(String[] args) {
 		Settings settings = Settings.parse(args);
+
+		if (settings == null) {
+			return;
+		}
+
+		Scripts scripts = Scripts.from(settings.getScriptsPath());
 
 		if (settings == null) {
 			return;
@@ -29,7 +37,7 @@ public class Main {
 			return;
 		}
 
-		RemoteControlBot bot = new RemoteControlBot(settings.getBotToken(), settings.getAllowUsers(), controller);
+		RemoteControlBot bot = new RemoteControlBot(settings.getBotToken(), settings.getAllowUsers(), controller, scripts);
 
 		try (TelegramBotsLongPollingApplication botsApplication = new TelegramBotsLongPollingApplication()) {
 			botsApplication.registerBot(settings.getBotToken(), bot);
