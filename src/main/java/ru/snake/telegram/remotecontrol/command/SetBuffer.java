@@ -2,11 +2,11 @@ package ru.snake.telegram.remotecontrol.command;
 
 import ru.snake.telegram.remotecontrol.Controller;
 
-public class PasteText implements Command {
+public class SetBuffer implements Command {
 
 	private final String text;
 
-	public PasteText(final String text) {
+	public SetBuffer(final String text) {
 		this.text = text;
 	}
 
@@ -17,7 +17,7 @@ public class PasteText implements Command {
 
 	@Override
 	public String toString() {
-		return "PasteText [text=" + text + "]";
+		return "SetBuffer [text=" + text + "]";
 	}
 
 }

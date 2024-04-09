@@ -12,6 +12,7 @@ import ru.snake.telegram.remotecontrol.command.MouseClick;
 import ru.snake.telegram.remotecontrol.command.MoveAbsolute;
 import ru.snake.telegram.remotecontrol.command.MoveRelative;
 import ru.snake.telegram.remotecontrol.command.PressKeys;
+import ru.snake.telegram.remotecontrol.command.SetBuffer;
 
 public class CommandParserTest {
 
@@ -82,8 +83,16 @@ public class CommandParserTest {
 	}
 
 	@Test
+	public void mustParseBuffer() {
+		List<Command> commands = CommandParser.parse("buffer test   ");
+
+		Assertions.assertEquals(1, commands.size());
+		Assertions.assertInstanceOf(SetBuffer.class, commands.get(0));
+	}
+
+	@Test
 	public void mustParseScript() {
-		List<Command> commands = CommandParser.parse(" keys ctrl a c \n click right\nmove 10 +5\nmove -5 0");
+		List<Command> commands = CommandParser.parse(" keys ctrl a c \n click right\nmove 10 +5\nmove -5 0\n");
 
 		Assertions.assertEquals(4, commands.size());
 		Assertions.assertInstanceOf(PressKeys.class, commands.get(0));

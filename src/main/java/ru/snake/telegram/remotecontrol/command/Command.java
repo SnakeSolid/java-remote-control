@@ -10,9 +10,9 @@ public interface Command {
 
 	public static Command moveAbsolute(final int x, final int y) {
 		if (x < 0 || x > 100) {
-			throw new IllegalArgumentException(String.format("X must be in 0..100 range, but %d found.", x));
+			throw new IllegalArgumentException(String.format("X must be in range 0..100, but %d found.", x));
 		} else if (y < 0 || y > 100) {
-			throw new IllegalArgumentException(String.format("Y must be in 0..100 range, but %d found.", y));
+			throw new IllegalArgumentException(String.format("Y must be in range 0..100, but %d found.", y));
 		}
 
 		return new MoveAbsolute(x, y);
@@ -34,7 +34,7 @@ public interface Command {
 	}
 
 	public static Command pasteText(String text) {
-		return new PasteText(text);
+		return new SetBuffer(text);
 	}
 
 }
