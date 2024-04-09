@@ -15,7 +15,7 @@ mvn package assembly:single
 Start application using following command:
 
 ```sh
-java -jar target/remote-control-0.0.1-SNAPSHOT-jar-with-dependencies.jar
+java -jar target/remote-control-0.0.1-SNAPSHOT-jar-with-dependencies.jar --bot-token "TOKEN" --allow-user ID
 ```
 
 ## License
