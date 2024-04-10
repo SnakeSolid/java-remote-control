@@ -2,6 +2,7 @@ package ru.snake.telegram.remotecontrol.command;
 
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.util.function.Consumer;
 
 import ru.snake.telegram.remotecontrol.Controller;
 
@@ -17,7 +18,7 @@ public class MoveRelative implements Command {
 	}
 
 	@Override
-	public void execute(Controller controller) {
+	public void execute(final Controller controller, final Consumer<String> result) {
 		Rectangle screenRect = controller.getScreenRect();
 		Point position = controller.getCursorPosition();
 		int x = clip(position.x + this.x, 0, screenRect.width);

@@ -99,7 +99,14 @@ public class CommandParser {
 		(a, b, c) -> Command.pasteText(c.strip())
 	);
 
-	private static final Parser<Command> COMMAND = or(KEYS, CLICK, DBLCLICK, MOVE, BUFFER);
+	private static final Parser<Command> EXEC = sequence(
+		string("exec"),
+		SPACE1,
+		many(CharPredicates.notChar('\n')).toScanner("text").source(),
+		(a, b, c) -> Command.shellExecute(c.strip())
+	);
+
+	private static final Parser<Command> COMMAND = or(KEYS, CLICK, DBLCLICK, MOVE, BUFFER, EXEC);
 
 	private static final Parser<List<Command>> COMMANDS = COMMAND.between(SPACE0, SPACE0).sepEndBy(isChar('\n'));
 

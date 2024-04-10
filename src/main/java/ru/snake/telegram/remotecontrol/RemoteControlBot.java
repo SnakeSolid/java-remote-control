@@ -172,23 +172,34 @@ public class RemoteControlBot implements LongPollingSingleThreadUpdateConsumer {
 		} catch (ParserException e) {
 			LOG.warn("Failed to parse script.", e);
 
-			sendMessage(chatId, String.format("Parsing error: %s", e.getMessage()));
+			sendText(chatId, String.format("Parsing error: %s", e.getMessage()));
 
 			return;
 		}
 
+		StringBuilder builder = new StringBuilder();
+
 		for (Command command : commands) {
-			command.execute(controller);
+			command.execute(controller, message -> {
+				builder.append(message);
+				builder.append('\n');
+			});
 		}
 
-		try {
-			Thread.sleep(100);
-		} catch (InterruptedException e) {
-			LOG.warn("Sleep failed.", e);
-		}
+		if (!builder.isEmpty()) {
+			String output = builder.toString().strip();
 
-		BufferedImage image = controller.showCursor();
-		sendPhoto(chatId, image);
+			sendMessage(chatId, String.format("```\n%s\n```", output));
+		} else {
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				LOG.warn("Sleep failed.", e);
+			}
+
+			BufferedImage image = controller.showCursor();
+			sendPhoto(chatId, image);
+		}
 	}
 
 	private void clipboard(long chatId) {
@@ -202,9 +213,10 @@ public class RemoteControlBot implements LongPollingSingleThreadUpdateConsumer {
 	}
 
 	private void wakeup(long chatId) {
-		WAKEUP_COMMAND.execute(controller);
+		WAKEUP_COMMAND.execute(controller, message -> {
+		});
 
-		sendMessage(chatId, "Success.");
+		sendMessage(chatId, "Done.");
 	}
 
 	private void screenshot(long chatId) {
@@ -261,6 +273,16 @@ public class RemoteControlBot implements LongPollingSingleThreadUpdateConsumer {
 			telegramClient.execute(answer);
 		} catch (TelegramApiException e) {
 			LOG.warn("Failed to send answer.", e);
+		}
+	}
+
+	private void sendText(long chatId, String text) {
+		SendMessage message = SendMessage.builder().chatId(chatId).text(text).build();
+
+		try {
+			telegramClient.execute(message);
+		} catch (TelegramApiException e) {
+			LOG.warn("Failed to send message.", e);
 		}
 	}
 

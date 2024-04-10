@@ -1,5 +1,7 @@
 package ru.snake.telegram.remotecontrol.command;
 
+import java.util.function.Consumer;
+
 import ru.snake.telegram.remotecontrol.Controller;
 
 public class MouseClick implements Command {
@@ -14,7 +16,7 @@ public class MouseClick implements Command {
 	}
 
 	@Override
-	public void execute(Controller controller) {
+	public void execute(final Controller controller, final Consumer<String> result) {
 		int identifier = button.asIdentifier();
 
 		for (int index = 0; index < count; index += 1) {

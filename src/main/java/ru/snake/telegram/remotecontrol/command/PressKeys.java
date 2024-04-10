@@ -3,6 +3,7 @@ package ru.snake.telegram.remotecontrol.command;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.function.Consumer;
 
 import ru.snake.telegram.remotecontrol.Controller;
 
@@ -15,7 +16,7 @@ public class PressKeys implements Command {
 	}
 
 	@Override
-	public void execute(Controller controller) {
+	public void execute(final Controller controller, final Consumer<String> result) {
 		Set<Integer> modifiers = new LinkedHashSet<>();
 
 		for (Key key : keys) {

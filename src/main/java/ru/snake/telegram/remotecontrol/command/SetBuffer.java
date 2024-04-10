@@ -1,5 +1,7 @@
 package ru.snake.telegram.remotecontrol.command;
 
+import java.util.function.Consumer;
+
 import ru.snake.telegram.remotecontrol.Controller;
 
 public class SetBuffer implements Command {
@@ -11,7 +13,7 @@ public class SetBuffer implements Command {
 	}
 
 	@Override
-	public void execute(Controller controller) {
+	public void execute(final Controller controller, final Consumer<String> result) {
 		controller.setClipboard(text);
 	}
 

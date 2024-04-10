@@ -1,12 +1,13 @@
 package ru.snake.telegram.remotecontrol.command;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 import ru.snake.telegram.remotecontrol.Controller;
 
 public interface Command {
 
-	public void execute(final Controller controller);
+	public void execute(final Controller controller, final Consumer<String> result);
 
 	public static Command moveAbsolute(final int x, final int y) {
 		if (x < 0 || x > 100) {
@@ -35,6 +36,10 @@ public interface Command {
 
 	public static Command pasteText(String text) {
 		return new SetBuffer(text);
+	}
+
+	public static Command shellExecute(String command) {
+		return new ShellExecute(command);
 	}
 
 }
