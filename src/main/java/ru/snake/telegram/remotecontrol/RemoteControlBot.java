@@ -112,6 +112,12 @@ public class RemoteControlBot implements LongPollingSingleThreadUpdateConsumer {
 	}
 
 	private void scripts(long chatId) {
+		try {
+			scripts.update();
+		} catch (IOException e) {
+			LOG.warn("Failed to update scripts.", e);
+		}
+
 		StringBuilder builder = new StringBuilder();
 		InlineKeyboardMarkupBuilder<?, ?> keyboardBuilder = InlineKeyboardMarkup.builder();
 		InlineKeyboardRow row = new InlineKeyboardRow();
@@ -162,7 +168,7 @@ public class RemoteControlBot implements LongPollingSingleThreadUpdateConsumer {
 		} catch (ParserException e) {
 			LOG.warn("Failed to parse script.", e);
 
-			sendMessage(chatId, e.getMessage());
+			sendMessage(chatId, String.format("Parsing error: %s", e.getMessage()));
 
 			return;
 		}
