@@ -2,5 +2,6 @@ syntax: glob
 .classpath
 .project
 .settings
+*.yaml
 log
 target
