@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.telegram.telegrambots.client.okhttp.OkHttpTelegramClient;
 import org.telegram.telegrambots.longpolling.util.LongPollingSingleThreadUpdateConsumer;
+import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
@@ -97,16 +98,19 @@ public class RemoteControlBot implements LongPollingSingleThreadUpdateConsumer {
 			}
 		} else if (update.hasCallbackQuery()) {
 			CallbackQuery query = update.getCallbackQuery();
+			String queryId = query.getId();
 			long userId = query.getFrom().getId();
 			long chatId = query.getMessage().getChatId();
 			String data = query.getData();
 
 			if (!whiteList.contains(userId)) {
-				sendMessage(chatId, String.format("Access denied, your ID %d.", userId));
+				callbackAnswer(queryId, String.format("Access denied, your ID %d.", userId));
 			} else if (data.startsWith(":")) {
 				String name = data.substring(1);
 				String script = scripts.getScript(name);
 				execute(chatId, script);
+
+				callbackAnswer(queryId);
 			}
 		}
 	}
@@ -237,6 +241,26 @@ public class RemoteControlBot implements LongPollingSingleThreadUpdateConsumer {
 			LOG.warn("Failed to send photo.", e);
 		} finally {
 			path.delete();
+		}
+	}
+
+	private void callbackAnswer(String queryId) {
+		AnswerCallbackQuery answer = AnswerCallbackQuery.builder().callbackQueryId(queryId).build();
+
+		try {
+			telegramClient.execute(answer);
+		} catch (TelegramApiException e) {
+			LOG.warn("Failed to send answer.", e);
+		}
+	}
+
+	private void callbackAnswer(String queryId, String text) {
+		AnswerCallbackQuery answer = AnswerCallbackQuery.builder().callbackQueryId(queryId).text(text).build();
+
+		try {
+			telegramClient.execute(answer);
+		} catch (TelegramApiException e) {
+			LOG.warn("Failed to send answer.", e);
 		}
 	}
 
