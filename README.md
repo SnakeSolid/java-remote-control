@@ -17,11 +17,13 @@ Start application using following command:
 ```sh
 java -jar target/remote-control-0.0.1-SNAPSHOT-jar-with-dependencies.jar \
   --bot-token "TOKEN" \
-  --allow-user ID \
+  --allow-user ID1 \
+  --allow-user ID2 \
+  --allow-user ID3 \
   --scripts-path "SCRIPTS"
 ```
 
-Where `TOKEN` is telegram bot token. `ID` owners user id, can be set to -1 bot
+Where `TOKEN` is telegram bot token. `ID*` owners user id, can be set to -1 bot
 will send user id in reply message. `SCRIPTS` path to script file.
 
 ## License
