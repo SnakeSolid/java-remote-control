@@ -29,15 +29,11 @@ import org.telegram.telegrambots.meta.generics.TelegramClient;
 
 import ru.snake.telegram.remotecontrol.command.Command;
 import ru.snake.telegram.remotecontrol.command.CommandParser;
-import ru.snake.telegram.remotecontrol.command.Key;
-import ru.snake.telegram.remotecontrol.command.PressKeys;
 import ru.snake.telegram.remotecontrol.script.Scripts;
 
 public class RemoteControlBot implements LongPollingSingleThreadUpdateConsumer {
 
 	private static final Logger LOG = LoggerFactory.getLogger(RemoteControlBot.class);
-
-	private static final Command WAKEUP_COMMAND = new PressKeys(new Key[] { Key.from("ctrl") });
 
 	private final TelegramClient telegramClient;
 
@@ -77,10 +73,6 @@ public class RemoteControlBot implements LongPollingSingleThreadUpdateConsumer {
 
 				case "/screenshot":
 					screenshot(chatId);
-					break;
-
-				case "/wakeup":
-					wakeup(chatId);
 					break;
 
 				case "/scripts":
@@ -210,13 +202,6 @@ public class RemoteControlBot implements LongPollingSingleThreadUpdateConsumer {
 		} else if (content.getImage() != null) {
 			sendPhoto(chatId, content.getImage());
 		}
-	}
-
-	private void wakeup(long chatId) {
-		WAKEUP_COMMAND.execute(controller, message -> {
-		});
-
-		sendMessage(chatId, "Done.");
 	}
 
 	private void screenshot(long chatId) {
