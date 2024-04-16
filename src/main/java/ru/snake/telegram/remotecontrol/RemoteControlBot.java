@@ -64,6 +64,8 @@ public class RemoteControlBot implements LongPollingSingleThreadUpdateConsumer {
 
 			if (!whiteList.contains(userId)) {
 				sendMessage(chatId, String.format("Access denied, your ID %d.", userId));
+
+				LOG.warn("Access denied for user ID = {}.", userId);
 			} else if (update.getMessage().hasText()) {
 				String text = message.getText();
 
@@ -97,6 +99,8 @@ public class RemoteControlBot implements LongPollingSingleThreadUpdateConsumer {
 
 			if (!whiteList.contains(userId)) {
 				callbackAnswer(queryId, String.format("Access denied, your ID %d.", userId));
+
+				LOG.warn("Access denied for user ID = {}.", userId);
 			} else if (data.startsWith(":")) {
 				String name = data.substring(1);
 				String script = scripts.getScript(name);
