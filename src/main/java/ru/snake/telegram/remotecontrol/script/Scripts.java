@@ -43,7 +43,7 @@ public class Scripts {
 		return scripts.get(name);
 	}
 
-	public void update() throws FileNotFoundException, IOException {
+	public void update() throws IOException {
 		if (updateTime < path.lastModified()) {
 			Map<String, String> content = load(path, yaml);
 
@@ -68,11 +68,11 @@ public class Scripts {
 			try {
 				scripts = load(path, yaml);
 			} catch (FileNotFoundException e) {
-				LOG.error("Error creating controller.", e);
+				LOG.error("Scripts file does not exists.", e);
 
 				return null;
 			} catch (IOException e) {
-				LOG.error("Error creating controller.", e);
+				LOG.error("Failed to load scripts file.", e);
 
 				return null;
 			}
