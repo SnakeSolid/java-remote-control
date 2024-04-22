@@ -66,21 +66,6 @@ public class CommandParser {
 		(a, button, count) -> Command.mouseClick(button, count)
 	);
 
-	private static final Parser<Command> DBLCLICK = sequence(
-		string("dblclick"),
-		sequence(
-			SPACE1,
-			or(
-				string("left").map(k -> Button.Left),
-				string("right").map(k -> Button.Right),
-				string("middle").map(k -> Button.Scroll),
-				string("scroll").map(k -> Button.Scroll)
-			),
-			(a, b) -> b
-		).optional(Button.Left),
-		(a, button) -> Command.mouseClick(button, 2)
-	);
-
 	private static final Parser<Command> MOVE = sequence(
 		string("move"),
 		SPACE1,
@@ -107,7 +92,7 @@ public class CommandParser {
 		(a, b, c) -> Command.shellExecute(c.strip())
 	);
 
-	private static final Parser<Command> COMMAND = or(KEYS, CLICK, DBLCLICK, MOVE, BUFFER, EXEC);
+	private static final Parser<Command> COMMAND = or(KEYS, CLICK, MOVE, BUFFER, EXEC);
 
 	private static final Parser<List<Command>> COMMANDS = COMMAND.between(SPACE0, SPACE0).sepEndBy(isChar('\n'));
 
