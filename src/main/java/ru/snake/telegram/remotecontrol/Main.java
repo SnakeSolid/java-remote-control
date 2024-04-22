@@ -37,7 +37,12 @@ public class Main {
 			return;
 		}
 
-		RemoteControlBot bot = new RemoteControlBot(settings.getBotToken(), settings.getAllowUsers(), controller, scripts);
+		RemoteControlBot bot = new RemoteControlBot(
+			settings.getBotToken(),
+			settings.getAllowUsers(),
+			controller,
+			scripts
+		);
 
 		try (TelegramBotsLongPollingApplication botsApplication = new TelegramBotsLongPollingApplication()) {
 			botsApplication.registerBot(settings.getBotToken(), bot);

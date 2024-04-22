@@ -2,6 +2,7 @@ package ru.snake.telegram.remotecontrol.command;
 
 import static org.jparsec.Parsers.or;
 import static org.jparsec.Parsers.sequence;
+import static org.jparsec.Scanners.DOUBLE_QUOTE_STRING;
 import static org.jparsec.Scanners.IDENTIFIER;
 import static org.jparsec.Scanners.INTEGER;
 import static org.jparsec.Scanners.isChar;
@@ -9,6 +10,7 @@ import static org.jparsec.Scanners.string;
 import static org.jparsec.pattern.Patterns.many;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.jparsec.Parser;
 import org.jparsec.pattern.CharPredicates;
@@ -96,8 +98,22 @@ public class CommandParser {
 
 	private static final Parser<List<Command>> COMMANDS = COMMAND.between(SPACE0, SPACE0).sepEndBy(isChar('\n'));
 
-	public static List<Command> parse(final String content) {
-		return COMMANDS.parse(content);
+	private static final Parser<String> STRING = DOUBLE_QUOTE_STRING.map(s -> s.substring(1, s.length() - 1));
+
+	private static final Parser<Optional<String>> NAME = sequence(
+		SPACE0,
+		or(IDENTIFIER, STRING),
+		SPACE0,
+		isChar(':'),
+		SPACE0,
+		isChar('\n'),
+		(a, b, c, d, e, f) -> b
+	).asOptional();
+
+	private static final Parser<Script> SCRIPT = sequence(NAME, COMMANDS, Script::from);
+
+	public static Script parse(final String content) {
+		return SCRIPT.parse(content);
 	}
 
 }

@@ -29,6 +29,7 @@ import org.telegram.telegrambots.meta.generics.TelegramClient;
 
 import ru.snake.telegram.remotecontrol.command.Command;
 import ru.snake.telegram.remotecontrol.command.CommandParser;
+import ru.snake.telegram.remotecontrol.command.Script;
 import ru.snake.telegram.remotecontrol.script.Scripts;
 
 public class RemoteControlBot implements LongPollingSingleThreadUpdateConsumer {
@@ -103,8 +104,8 @@ public class RemoteControlBot implements LongPollingSingleThreadUpdateConsumer {
 				LOG.warn("Access denied for user ID = {}.", userId);
 			} else if (data.startsWith(":")) {
 				String name = data.substring(1);
-				String script = scripts.getScript(name);
-				execute(chatId, script);
+				List<Command> commands = scripts.getCommands(name);
+				execute(chatId, commands);
 
 				callbackAnswer(queryId);
 			}
@@ -155,27 +156,36 @@ public class RemoteControlBot implements LongPollingSingleThreadUpdateConsumer {
 	}
 
 	private void execute(long chatId, String text) {
-		List<Command> commands;
+		Script script;
 
 		try {
-			commands = CommandParser.parse(text.toLowerCase());
+			script = CommandParser.parse(text.toLowerCase());
 		} catch (ParserException e) {
 			sendText(chatId, String.format("Parsing error: %s", e.getMessage()));
 
 			return;
 		}
 
-		StringBuilder builder = new StringBuilder();
+		if (script.hasName()) {
+			String name = script.getName();
+
+			scripts.insertCommands(name, script.getCommands());
+
+			sendText(chatId, String.format("Script `%s` saved to scripts.", name));
+		} else {
+			execute(chatId, script.getCommands());
+		}
+	}
+
+	private void execute(long chatId, List<Command> commands) {
+		StringAppender appender = new StringAppender();
 
 		for (Command command : commands) {
-			command.execute(controller, message -> {
-				builder.append(message);
-				builder.append('\n');
-			});
+			command.execute(controller, appender::appendLine);
 		}
 
-		if (!builder.isEmpty()) {
-			String output = builder.toString().strip();
+		if (!appender.isEmpty()) {
+			String output = appender.toString().strip();
 
 			sendMessage(chatId, String.format("```\n%s\n```", output));
 		} else {
