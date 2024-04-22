@@ -118,7 +118,6 @@ public class RemoteControlBot implements LongPollingSingleThreadUpdateConsumer {
 			LOG.warn("Failed to update scripts.", e);
 		}
 
-		StringBuilder builder = new StringBuilder();
 		InlineKeyboardMarkupBuilder<?, ?> keyboardBuilder = InlineKeyboardMarkup.builder();
 		InlineKeyboardRow row = new InlineKeyboardRow();
 		int index = 1;
@@ -127,11 +126,6 @@ public class RemoteControlBot implements LongPollingSingleThreadUpdateConsumer {
 			InlineKeyboardButton button = new InlineKeyboardButton(name);
 			button.setCallbackData(String.format(":%s", name));
 			row.add(button);
-
-			builder.append(index);
-			builder.append("\\. *");
-			builder.append(name.strip());
-			builder.append("*\n");
 
 			if (index % 4 == 0) {
 				keyboardBuilder.keyboardRow(row);
@@ -149,7 +143,7 @@ public class RemoteControlBot implements LongPollingSingleThreadUpdateConsumer {
 		SendMessage message = SendMessage.builder()
 			.chatId(chatId)
 			.parseMode("MarkdownV2")
-			.text(builder.toString())
+			.text("Available scripts:")
 			.replyMarkup(markup)
 			.build();
 
