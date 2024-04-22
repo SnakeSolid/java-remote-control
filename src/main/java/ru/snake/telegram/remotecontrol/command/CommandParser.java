@@ -39,6 +39,7 @@ public class CommandParser {
 		isChar('*').map(k -> Key.from("*")),
 		isChar('/').map(k -> Key.from("/")),
 		isChar('=').map(k -> Key.from("=")),
+		INTEGER.map(k -> Key.from(k)),
 		IDENTIFIER.map(k -> Key.from(k))
 	);
 

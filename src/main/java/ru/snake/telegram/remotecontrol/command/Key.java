@@ -99,7 +99,7 @@ public class Key {
 
 		KEYS.put("printscreen", new Key(KeyEvent.VK_PRINTSCREEN, false));
 		KEYS.put("insert", new Key(KeyEvent.VK_INSERT, false));
-		KEYS.put("back_quote", new Key(KeyEvent.VK_BACK_QUOTE, false));
+		KEYS.put("backquote", new Key(KeyEvent.VK_BACK_QUOTE, false));
 		KEYS.put("quote", new Key(KeyEvent.VK_QUOTE, false));
 	}
 
