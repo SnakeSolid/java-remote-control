@@ -166,8 +166,6 @@ public class RemoteControlBot implements LongPollingSingleThreadUpdateConsumer {
 		try {
 			commands = CommandParser.parse(text.toLowerCase());
 		} catch (ParserException e) {
-			LOG.warn("Failed to parse script.", e);
-
 			sendText(chatId, String.format("Parsing error: %s", e.getMessage()));
 
 			return;
