@@ -70,8 +70,8 @@ public class Key {
 
 		KEYS.put("[", new Key(KeyEvent.VK_OPEN_BRACKET, false));
 		KEYS.put("]", new Key(KeyEvent.VK_CLOSE_BRACKET, false));
-		KEYS.put(".", new Key(KeyEvent.VK_COMMA, false));
-		KEYS.put(",", new Key(KeyEvent.VK_PERIOD, false));
+		KEYS.put(".", new Key(KeyEvent.VK_PERIOD, false));
+		KEYS.put(",", new Key(KeyEvent.VK_COMMA, false));
 		KEYS.put(";", new Key(KeyEvent.VK_SEMICOLON, false));
 		KEYS.put("\\", new Key(KeyEvent.VK_BACK_SLASH, false));
 		KEYS.put("+", new Key(KeyEvent.VK_ADD, false));
