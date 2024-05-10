@@ -6,7 +6,7 @@ import static org.jparsec.Scanners.DOUBLE_QUOTE_STRING;
 import static org.jparsec.Scanners.IDENTIFIER;
 import static org.jparsec.Scanners.INTEGER;
 import static org.jparsec.Scanners.isChar;
-import static org.jparsec.Scanners.string;
+import static org.jparsec.Scanners.stringCaseInsensitive;
 import static org.jparsec.pattern.Patterns.many;
 
 import java.util.List;
@@ -46,21 +46,21 @@ public class CommandParser {
 	);
 
 	private static final Parser<Command> KEYS = sequence(
-		string("keys"),
+		stringCaseInsensitive("keys"),
 		SPACE1,
 		KEY.sepBy1(SPACE1),
 		(a, b, c) -> Command.pressKeys(c)
 	);
 
 	private static final Parser<Command> CLICK = sequence(
-		string("click"),
+		stringCaseInsensitive("click"),
 		sequence(
 			SPACE1,
 			or(
-				string("left").map(k -> Button.Left),
-				string("right").map(k -> Button.Right),
-				string("middle").map(k -> Button.Scroll),
-				string("scroll").map(k -> Button.Scroll)
+				stringCaseInsensitive("left").map(k -> Button.Left),
+				stringCaseInsensitive("right").map(k -> Button.Right),
+				stringCaseInsensitive("middle").map(k -> Button.Scroll),
+				stringCaseInsensitive("scroll").map(k -> Button.Scroll)
 			),
 			(a, b) -> b
 		).optional(Button.Left),
@@ -69,7 +69,7 @@ public class CommandParser {
 	);
 
 	private static final Parser<Command> MOVE = sequence(
-		string("move"),
+		stringCaseInsensitive("move"),
 		SPACE1,
 		or(
 			sequence(NUMBER, SPACE1, NUMBER, (a, b, c) -> Command.moveAbsolute(a, c)),
@@ -81,14 +81,14 @@ public class CommandParser {
 	);
 
 	private static final Parser<Command> BUFFER = sequence(
-		string("buffer"),
+		stringCaseInsensitive("buffer"),
 		SPACE1,
 		many(CharPredicates.notChar('\n')).toScanner("text").source(),
 		(a, b, c) -> Command.pasteText(c.strip())
 	);
 
 	private static final Parser<Command> EXEC = sequence(
-		string("exec"),
+		stringCaseInsensitive("exec"),
 		SPACE1,
 		many(CharPredicates.notChar('\n')).toScanner("text").source(),
 		(a, b, c) -> Command.shellExecute(c.strip())

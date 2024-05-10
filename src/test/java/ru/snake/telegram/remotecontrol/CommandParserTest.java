@@ -120,4 +120,12 @@ public class CommandParserTest {
 		Assertions.assertInstanceOf(MoveRelative.class, commands.get(3));
 	}
 
+	@Test
+	public void mustParseCaseIgnoringCase() {
+		List<Command> commands = CommandParser.parse("ClIcK").getCommands();
+
+		Assertions.assertEquals(1, commands.size());
+		Assertions.assertInstanceOf(MouseClick.class, commands.get(0));
+	}
+
 }
