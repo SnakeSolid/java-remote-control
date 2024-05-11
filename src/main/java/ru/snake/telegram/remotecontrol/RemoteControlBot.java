@@ -58,6 +58,17 @@ public class RemoteControlBot implements LongPollingSingleThreadUpdateConsumer {
 
 	@Override
 	public void consume(Update update) {
+		try {
+			consumeInternal(update);
+		} catch (Error e) {
+			LOG.error("Failed to process request.", e);
+
+			// Required to stop application if runtime error occurred.
+			System.exit(0);
+		}
+	}
+
+	private void consumeInternal(Update update) {
 		if (update.hasMessage()) {
 			Message message = update.getMessage();
 			long userId = message.getFrom().getId();
