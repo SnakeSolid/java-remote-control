@@ -159,7 +159,7 @@ public class RemoteControlBot implements LongPollingSingleThreadUpdateConsumer {
 		Script script;
 
 		try {
-			script = CommandParser.parse(text.toLowerCase());
+			script = CommandParser.parse(text);
 		} catch (ParserException e) {
 			sendText(chatId, String.format("Parsing error: %s", e.getMessage()));
 
