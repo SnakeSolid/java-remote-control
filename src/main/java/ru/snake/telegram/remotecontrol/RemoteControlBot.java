@@ -193,6 +193,9 @@ public class RemoteControlBot implements LongPollingSingleThreadUpdateConsumer {
 
 		for (Command command : commands) {
 			command.execute(controller, appender::appendLine);
+
+			// Add fixed delay between commands, to avoid skipping events.
+			controller.sleep(50);
 		}
 
 		if (!appender.isEmpty()) {
@@ -200,11 +203,7 @@ public class RemoteControlBot implements LongPollingSingleThreadUpdateConsumer {
 
 			sendMessage(chatId, String.format("```\n%s\n```", output));
 		} else {
-			try {
-				Thread.sleep(100);
-			} catch (InterruptedException e) {
-				LOG.warn("Sleep failed.", e);
-			}
+			controller.sleep(100);
 
 			BufferedImage image = controller.showCursor();
 			sendPhoto(chatId, image);

@@ -162,6 +162,10 @@ public class Controller {
 		clipboard.setContents(selection, selection);
 	}
 
+	public void sleep(int millis) {
+		robot.delay(millis);
+	}
+
 	@Override
 	public String toString() {
 		return "Controller [cursor=" + cursor + ", clipboard=" + clipboard + ", screeRect=" + screenRect + ", robot="
