@@ -23,7 +23,7 @@ public class Main {
 
 		Scripts scripts = Scripts.from(settings.getScriptsPath());
 
-		if (settings == null) {
+		if (scripts == null) {
 			return;
 		}
 
